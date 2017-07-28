@@ -1,20 +1,21 @@
 package controller
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 )
 
 // TXHandler is handler for working with transaction.
 // This is wrapper function for commit and rollback.
-func TXHandler(c *gin.Context, db *sqlx.DB, f func(*sqlx.Tx) error) {
+func TXHandler(db *sqlx.DB, f func(*sqlx.Tx) error) error {
 	tx, err := db.Beginx()
 	if err != nil {
-		c.JSON(500, gin.H{"err": "start transaction failed"})
-		c.Abort()
-		return
+		return errors.Wrap(err, "start transaction failed")
 	}
 	defer func() {
 		if err := recover(); err != nil {
@@ -24,9 +25,18 @@ func TXHandler(c *gin.Context, db *sqlx.DB, f func(*sqlx.Tx) error) {
 		}
 	}()
 	if err := f(tx); err != nil {
-		log.Printf("operation failed: %s", err)
-		c.JSON(500, gin.H{"err": "operation failed"})
-		c.Abort()
-		return
+		return errors.Wrap(err, "transaction: operation failed")
 	}
+	return nil
+}
+
+func Error(w http.ResponseWriter, err error, code int) {
+	http.Error(w, fmt.Sprintf("%s", err), code)
+}
+
+type H map[string]interface{}
+
+func JSON(w http.ResponseWriter, code int, data interface{}) error {
+	w.WriteHeader(code)
+	return json.NewEncoder(w).Encode(data)
 }

@@ -1,10 +1,10 @@
-# gin-boilerplate
+# go-todo
 
-[gin-gonic/gin](https://github.com/gin-gonic/gin) とReact(ES2015) を利用したTODOアプリです。TODOアプリのフロント実装は [tastejs/todomvc](https://github.com/tastejs/todomvc) を利用しています。
+Goの `net/http` とReact(ES2015) を利用したTODOアプリです。TODOアプリのフロント実装は [tastejs/todomvc](https://github.com/tastejs/todomvc) を利用しています。
 
 ## 必要なもの
 
-* Go 1.6以上
+* Go 1.9以上
 * MySQLクライアント
     * https://github.com/go-sql-driver/mysql のインストールに必要です。
 * Node 6.x以上, npm 3.x以上

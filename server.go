@@ -1,16 +1,19 @@
 package base
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 
-	"github.com/voyagegroup/gin-boilerplate/controller"
-	"github.com/voyagegroup/gin-boilerplate/db"
+	"github.com/suzuken/go-todo/controller"
+	"github.com/suzuken/go-todo/db"
 
-	"github.com/gin-gonic/contrib/sessions"
-	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/context"
+	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
-	csrf "github.com/utrack/gin-csrf"
 )
 
 // Serverはベースアプリケーションのserverを示します
@@ -18,7 +21,7 @@ import (
 // TODO: dbxをstructから分離したほうが複数人数開発だと見通しがよいかもしれない
 type Server struct {
 	dbx    *sqlx.DB
-	Engine *gin.Engine
+	router *mux.Router
 }
 
 func (s *Server) Close() error {
@@ -36,56 +39,53 @@ func (s *Server) Init(dbconf, env string) {
 		log.Fatalf("db initialization failed: %s", err)
 	}
 	s.dbx = dbx
-
-	store := sessions.NewCookieStore([]byte("secret"))
-	s.Engine.Use(sessions.Sessions("todosession", store))
-	s.Engine.Use(csrf.Middleware(csrf.Options{
-		Secret: "secret",
-		ErrorFunc: func(c *gin.Context) {
-			c.JSON(400, gin.H{"error": "CSRF token mismach"})
-			c.Abort()
-		},
-	}))
-
-	s.Route()
+	s.router = s.Route()
 }
 
 // Newはベースアプリケーションを初期化します
 func New() *Server {
-	r := gin.Default()
-	return &Server{Engine: r}
+	return &Server{}
 }
 
-func (s *Server) Run(addr ...string) {
-	s.Engine.Run(addr...)
+// csrfProtectKey should have 32 byte length.
+var csrfProtectKey = []byte("32-byte-long-auth-key")
+
+func (s *Server) Run(addr string) {
+	// NOTE: when you serve on TLS, make csrf.Secure(true)
+	CSRF := csrf.Protect(
+		csrfProtectKey, csrf.Secure(false))
+	http.ListenAndServe(addr, context.ClearHandler(CSRF(s.router)))
 }
 
 // Routeはベースアプリケーションのroutingを設定します
-//
-// TODO muxを返すようにしてroutingのテストをしやすくする
-func (s *Server) Route() {
-	// ヘルスチェック用
-	// TODO opsチームとnginxからのhealthcheck用のendpointについてあわせておく
-	s.Engine.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "%s", "pong")
-	})
-	s.Engine.GET("/token", func(c *gin.Context) {
-		c.JSON(http.StatusOK, map[string]string{
-			"token": csrf.GetToken(c),
+func (s *Server) Route() *mux.Router {
+	router := mux.NewRouter()
+	router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, "pong")
+	}).Methods("GET")
+	router.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{
+			"token": csrf.Token(r),
 		})
-	})
+	}).Methods("GET")
 
 	todo := &controller.Todo{DB: s.dbx}
-	s.Engine.GET("/api/todos", todo.Get)
-	s.Engine.PUT("/api/todos", todo.Put)
-	s.Engine.POST("/api/todos", todo.Post)
-	s.Engine.DELETE("/api/todos", todo.Delete)
 
-	s.Engine.DELETE("/api/todos/multi", todo.DeleteMulti)
+	// TODO ng?
+	router.Handle("/api/todos", handler(todo.Get)).Methods("GET")
+	router.Handle("/api/todos", handler(todo.Put)).Methods("PUT")
+	router.Handle("/api/todos", handler(todo.Post)).Methods("POST")
+	router.Handle("/api/todos", handler(todo.Delete)).Methods("DELETE")
+	router.Handle("/api/todos/multi", handler(todo.DeleteMulti)).Methods("DELETE")
 
-	s.Engine.POST("/api/todos/toggle", todo.Toggle)
-	s.Engine.POST("/api/todos/toggleall", todo.ToggleAll)
+	router.Handle("/api/todos/toggle", handler(todo.Toggle)).Methods("POST")
+	router.Handle("/api/todos/toggleall", handler(todo.ToggleAll)).Methods("POST")
 
-	s.Engine.StaticFile("/", "public/index.html")
-	s.Engine.Static("/static", "public")
+	// TODO return index.html
+	router.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/", http.FileServer(http.Dir("/public"))))
+
+	return router
 }

@@ -1,12 +1,12 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
-	"github.com/voyagegroup/gin-boilerplate/model"
+	"github.com/suzuken/go-todo/model"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,23 +16,21 @@ type Todo struct {
 }
 
 // GetはDBからユーザを取得して結果を返します
-func (t *Todo) Get(c *gin.Context) {
+func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
 	todos, err := model.TodosAll(t.DB)
 	if err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+		return err
 	}
-	c.JSON(http.StatusOK, todos)
+	return JSON(w, 200, todos)
 }
 
-func (t *Todo) Put(c *gin.Context) {
+func (t *Todo) Put(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
-	if err := c.BindJSON(&todo); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		result, err := todo.Update(tx)
 		if err != nil {
 			return err
@@ -42,21 +40,22 @@ func (t *Todo) Put(c *gin.Context) {
 		}
 		todo.ID, err = result.LastInsertId()
 		return err
-	})
+	}); err != nil {
+		return err
+	}
 
-	c.JSON(http.StatusOK, todo)
+	return JSON(w, http.StatusOK, todo)
 }
 
 // PostはタスクをDBに追加します
 // todoをJSONとして受け取ることを想定しています。
-func (t *Todo) Post(c *gin.Context) {
+func (t *Todo) Post(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
-	if err := c.BindJSON(&todo); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		result, err := todo.Insert(tx)
 		if err != nil {
 			return err
@@ -66,57 +65,61 @@ func (t *Todo) Post(c *gin.Context) {
 		}
 		todo.ID, err = result.LastInsertId()
 		return err
-	})
-
-	c.JSON(http.StatusCreated, todo)
-	return
-}
-
-func (t *Todo) Delete(c *gin.Context) {
-	var todo model.Todo
-	if err := c.BindJSON(&todo); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	}); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	return JSON(w, http.StatusCreated, todo)
+}
+
+func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
+	var todo model.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
+	}
+
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		_, err := todo.Delete(tx)
 		if err != nil {
 			return err
 		}
 		return tx.Commit()
-	})
-
-	c.Status(http.StatusOK)
-}
-
-func (t *Todo) DeleteMulti(c *gin.Context) {
-	var todos []model.Todo
-	if err := c.BindJSON(&todos); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	}); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	w.WriteHeader(http.StatusOK)
+	return nil
+}
+
+func (t *Todo) DeleteMulti(w http.ResponseWriter, r *http.Request) error {
+	var todos []model.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todos); err != nil {
+		return err
+	}
+
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		for _, todo := range todos {
 			if _, err := todo.Delete(tx); err != nil {
 				return err
 			}
 		}
 		return tx.Commit()
-	})
-
-	c.Status(http.StatusOK)
-}
-
-func (t *Todo) Toggle(c *gin.Context) {
-	var todo model.Todo
-	if err := c.BindJSON(&todo); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	}); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	w.WriteHeader(http.StatusOK)
+	return nil
+}
+
+func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
+	var todo model.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
+	}
+
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		result, err := todo.Toggle(tx)
 		if err != nil {
 			return err
@@ -130,25 +133,31 @@ func (t *Todo) Toggle(c *gin.Context) {
 			return errors.New("no rows updated")
 		}
 		return nil
-	})
-	c.Status(http.StatusOK)
+	}); err != nil {
+		return err
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return nil
 }
 
-func (t *Todo) ToggleAll(c *gin.Context) {
+func (t *Todo) ToggleAll(w http.ResponseWriter, r *http.Request) error {
 	var req = struct {
 		Checked bool `json:"checked"`
 	}{}
-	if err := c.BindJSON(&req); err != nil {
-		c.JSON(500, gin.H{"err": err.Error()})
-		return
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return err
 	}
 
-	TXHandler(c, t.DB, func(tx *sqlx.Tx) error {
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
 		if _, err := model.TodosToggleAll(tx, req.Checked); err != nil {
 			return err
 		}
 		return tx.Commit()
-	})
+	}); err != nil {
+		return err
+	}
 
-	c.Status(http.StatusOK)
+	w.WriteHeader(http.StatusOK)
+	return nil
 }
