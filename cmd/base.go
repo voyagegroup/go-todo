@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/voyagegroup/gin-boilerplate"
+	"github.com/suzuken/go-todo"
 )
 
 func main() {

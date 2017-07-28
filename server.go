@@ -51,6 +51,7 @@ func New() *Server {
 var csrfProtectKey = []byte("32-byte-long-auth-key")
 
 func (s *Server) Run(addr string) {
+	log.Printf("start listening on %s", addr)
 	// NOTE: when you serve on TLS, make csrf.Secure(true)
 	CSRF := csrf.Protect(
 		csrfProtectKey, csrf.Secure(false))
@@ -84,8 +85,11 @@ func (s *Server) Route() *mux.Router {
 	router.Handle("/api/todos/toggleall", handler(todo.ToggleAll)).Methods("POST")
 
 	// TODO return index.html
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "public/index.html")
+	})
 	router.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/", http.FileServer(http.Dir("/public"))))
+		http.StripPrefix("/static/", http.FileServer(http.Dir("public"))))
 
 	return router
 }

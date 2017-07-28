@@ -55,7 +55,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify(todo)
         })
@@ -76,7 +76,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify({checked: checked})
         })
@@ -99,7 +99,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify(todoToToggle)
         })
@@ -134,7 +134,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify(todo)
         })
@@ -159,7 +159,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify(toSave)
         })
@@ -186,7 +186,7 @@ export default class TodoModel {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': this.token
+                'X-CSRF-Token': this.token
             },
             body: JSON.stringify(todosToDelete)
         })

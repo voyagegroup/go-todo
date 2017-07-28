@@ -12,13 +12,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/voyagegroup/gin-boilerplate/model"
-
-	"github.com/gin-gonic/gin"
+	"github.com/suzuken/go-todo/model"
 )
 
 func defaultServer() *Server {
-	s := &Server{Engine: gin.New()}
+	s := &Server{}
 	s.Init("dbconfig.yml", "test")
 	return s
 }
@@ -39,7 +37,7 @@ func TestMain(m *testing.M) {
 func TestHealthCheck(t *testing.T) {
 	s := defaultServer()
 
-	ts := httptest.NewServer(s.Engine)
+	ts := httptest.NewServer(s.router)
 	defer ts.Close()
 
 	resp, err := http.Get(ts.URL + "/ping")
@@ -59,7 +57,7 @@ func TestHealthCheck(t *testing.T) {
 
 func TestPostGetDelete(t *testing.T) {
 	s := defaultServer()
-	ts := httptest.NewServer(s.Engine)
+	ts := httptest.NewServer(s.router)
 	defer ts.Close()
 
 	// create new todos

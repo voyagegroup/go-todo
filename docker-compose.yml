@@ -1,6 +1,6 @@
 db:
   build: .
-  container_name: treasure-mysql
+  container_name: todo-mysql
   environment:
     MYSQL_ROOT_PASSWORD: password
   ports:
