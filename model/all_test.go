@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/voyagegroup/gin-boilerplate/db"
+	"github.com/suzuken/go-todo/db"
 
 	"github.com/jmoiron/sqlx"
 )
