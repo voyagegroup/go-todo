@@ -10,18 +10,28 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.js(x?)$/,
-        cacheDirectory: true,
-        exclude: [/node_modules/],
-        loader: 'babel-loader?presets[]=es2015&presets[]=react'
+          test: /\.js(x?)$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              query: {
+                presets:['es2015', 'react'],
+                cacheDirectory: true
+              }
+            }
+          ]
       }
     ]
   },
   resolve: {
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.js', '.jsx']
+    modules: [
+      // path.join(__dirname, "src"),
+      'node_modules'
+    ],
+    extensions: ['.js', '.jsx']
   },
   plugins: [
   ],
