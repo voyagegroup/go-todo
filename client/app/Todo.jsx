@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 export default class Todo extends React.Component {
@@ -91,12 +92,12 @@ export default class Todo extends React.Component {
 }
 
 Todo.propTypes = {
-    editing: React.PropTypes.bool,
-    editText: React.PropTypes.string,
-    onToggle: React.PropTypes.func,
-    onSave: React.PropTypes.func,
-    onDestroy: React.PropTypes.func,
-    onEdit: React.PropTypes.func,
-    onCancel: React.PropTypes.func,
-    todo: React.PropTypes.object
+    editing: PropTypes.bool,
+    editText: PropTypes.string,
+    onToggle: PropTypes.func,
+    onSave: PropTypes.func,
+    onDestroy: PropTypes.func,
+    onEdit: PropTypes.func,
+    onCancel: PropTypes.func,
+    todo: PropTypes.object
 }

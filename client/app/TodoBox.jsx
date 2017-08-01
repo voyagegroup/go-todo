@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Todo from './Todo';
 import TodoModel from './TodoModel';
 import TodoFooter from './TodoFooter';
@@ -159,9 +160,9 @@ export default class TodoBox extends React.Component {
 }
 
 TodoBox.propTypes = {
-    pollInterval: React.PropTypes.number,
-    nowShowing: React.PropTypes.string,
-    model: React.PropTypes.instanceOf(TodoModel)
+    pollInterval: PropTypes.number,
+    nowShowing: PropTypes.string,
+    model: PropTypes.instanceOf(TodoModel)
 }
 
 TodoBox.defaultProps = {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 export default class TodoFooter extends React.Component {
@@ -76,10 +77,10 @@ export default class TodoFooter extends React.Component {
 }
 
 TodoFooter.propTypes = {
-    count: React.PropTypes.number,
-    completedCount: React.PropTypes.number,
-    nowShowing: React.PropTypes.string,
-    onClearCompleted: React.PropTypes.func,
-    onFooterClick: React.PropTypes.func
+    count: PropTypes.number,
+    completedCount: PropTypes.number,
+    nowShowing: PropTypes.string,
+    onClearCompleted: PropTypes.func,
+    onFooterClick: PropTypes.func
 }
 
