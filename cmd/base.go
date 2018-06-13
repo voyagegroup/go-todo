@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/suzuken/go-todo"
+	"github.com/voyagegroup/go-todo"
 )
 
 func main() {

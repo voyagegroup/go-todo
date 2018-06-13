@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/suzuken/go-todo/db"
+	"github.com/voyagegroup/go-todo/db"
 
 	"github.com/jmoiron/sqlx"
 )

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/suzuken/go-todo/model"
+	"github.com/voyagegroup/go-todo/model"
 
 	"github.com/jmoiron/sqlx"
 )

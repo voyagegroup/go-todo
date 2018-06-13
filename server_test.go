@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/suzuken/go-todo/model"
+	"github.com/voyagegroup/go-todo/model"
 )
 
 func defaultServer() *Server {

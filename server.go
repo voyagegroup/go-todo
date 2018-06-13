@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/suzuken/go-todo/controller"
-	"github.com/suzuken/go-todo/db"
+	"github.com/voyagegroup/go-todo/controller"
+	"github.com/voyagegroup/go-todo/db"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/context"

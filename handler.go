@@ -19,7 +19,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/suzuken/go-todo/httputil"
+	"github.com/voyagegroup/go-todo/httputil"
 )
 
 type handler func(w http.ResponseWriter, r *http.Request) error
