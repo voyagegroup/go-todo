@@ -28,8 +28,8 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "prop-types": "^15.5.10",
-    "react": "^16.1.0",
-    "react-dom": "^16.1.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
     "react-router": "^4.1.2",
     "whatwg-fetch": "^2.0.3"
   }
