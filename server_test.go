@@ -61,7 +61,7 @@ func TestPostGetDelete(t *testing.T) {
 	defer ts.Close()
 
 	// create new todos
-	req, err := http.NewRequest("PUT", ts.URL+"/api/todos",
+	req, err := http.NewRequest("POST", ts.URL+"/api/todos",
 		strings.NewReader(`{"title": "test", "completed": false}`))
 	if err != nil {
 		t.Fatalf("create put request failed: %s", err)
@@ -88,7 +88,7 @@ func TestPostGetDelete(t *testing.T) {
 		t.Fatalf("unmarshal failed: %s", err)
 	}
 	if todo.Title != "test" {
-		t.Fatal("response is different: want test, got %s", todo.Title)
+		t.Fatalf("response is different: want test, got %s", todo.Title)
 	}
 
 	// test get
@@ -111,10 +111,10 @@ func TestPostGetDelete(t *testing.T) {
 		t.Fatalf("unmarshal failed: %s", err)
 	}
 	if len(gotTodos) != 1 {
-		t.Fatal("todo length want 1 got %d", len(gotTodos))
+		t.Fatalf("todo length want 1 got %d", len(gotTodos))
 	}
 	if got := gotTodos[0].Title; got != "test" {
-		t.Fatal("response is different: want test, got %s", got)
+		t.Fatalf("response is different: want test, got %s", got)
 	}
 
 	bbb, err := json.Marshal(gotTodos[0])
