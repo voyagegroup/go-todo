@@ -8,19 +8,19 @@ DBNAME:=treasure
 ENV:=development
 
 deps:
-	which godep || go get github.com/tools/godep
-	godep restore
+	which dep || go get -v -u github.com/golang/dep/cmd/dep
+	dep ensure 
 	go get github.com/rubenv/sql-migrate/...
-	npm install
+	$(NPM) install
 
 test:
-	godep go test -v ./...
+	go test -v ./...
 
 integration-test:
-	godep go test -v ./... -tags=integration
+	go test -v ./... -tags=integration
 
-save:
-	godep save
+run:
+	go run cmd/base.go
 
 build:
 	$(WEBPACK) -p --config $(WEBPACK_JS)
