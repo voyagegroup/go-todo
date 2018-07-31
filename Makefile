@@ -22,6 +22,9 @@ integration-test:
 run:
 	go run cmd/base.go
 
+prettier:
+  prettier ./client/**/** --write
+
 build:
 	$(WEBPACK) -p --config $(WEBPACK_JS)
 

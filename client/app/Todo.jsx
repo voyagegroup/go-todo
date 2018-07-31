@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 class Todo extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Todo extends React.Component {
         const val = this.state.editText.trim();
         if (val) {
             this.props.onSave(val);
-            this.setState({editText: val});
+            this.setState({ editText: val });
         } else {
             this.props.onDestroy();
         }
@@ -31,12 +31,12 @@ class Todo extends React.Component {
 
     handleEdit() {
         this.props.onEdit();
-        this.setState({editText: this.props.todo.title});
+        this.setState({ editText: this.props.todo.title });
     }
 
     handleKeyDown(event) {
         if (event.which === this.ESCAPE_KEY) {
-            this.setState({editText: this.props.todo.title});
+            this.setState({ editText: this.props.todo.title });
             this.props.onCancel(event);
         } else if (event.which === this.ENTER_KEY) {
             this.handleSubmit();
@@ -45,7 +45,7 @@ class Todo extends React.Component {
 
     handleChange(event) {
         if (this.props.editing) {
-            this.setState({editText: event.target.value});
+            this.setState({ editText: event.target.value });
         }
     }
 
@@ -67,30 +67,35 @@ class Todo extends React.Component {
 
     render() {
         return (
-            <li className={classNames({
-              completed: this.props.todo.completed,
-              editing: this.props.editing
-            })}>
-            <div className="view">
+            <li
+                className={classNames({
+                    completed: this.props.todo.completed,
+                    editing: this.props.editing
+                })}
+            >
+                <div className="view">
+                    <input
+                        className="toggle"
+                        type="checkbox"
+                        checked={this.props.todo.completed}
+                        onChange={this.props.onToggle}
+                    />
+                    <label onDoubleClick={this.handleEdit}>
+                        {this.props.todo.title}
+                    </label>
+                    <button
+                        className="destroy"
+                        onClick={this.props.onDestroy}
+                    />
+                </div>
                 <input
-                    className="toggle"
-                    type="checkbox"
-                    checked={this.props.todo.completed}
-                    onChange={this.props.onToggle}
+                    ref="editField"
+                    className="edit"
+                    value={this.state.editText}
+                    onBlur={this.handleSubmit}
+                    onChange={this.handleChange}
+                    onKeyDown={this.handleKeyDown}
                 />
-                <label onDoubleClick={this.handleEdit}>
-                    {this.props.todo.title}
-                </label>
-                <button className="destroy" onClick={this.props.onDestroy} />
-            </div>
-            <input
-                ref="editField"
-                className="edit"
-                value={this.state.editText}
-                onBlur={this.handleSubmit}
-                onChange={this.handleChange}
-                onKeyDown={this.handleKeyDown}
-            />
             </li>
         );
     }
@@ -105,6 +110,6 @@ Todo.propTypes = {
     onEdit: PropTypes.func,
     onCancel: PropTypes.func,
     todo: PropTypes.object
-}
+};
 
 export default Todo;

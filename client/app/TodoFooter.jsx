@@ -1,37 +1,38 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import * as React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 class TodoFooter extends React.Component {
     handleClickAll(e) {
         e.preventDefault();
-        this.props.onFooterClick('all');
+        this.props.onFooterClick("all");
     }
 
     handleClickActive(e) {
         e.preventDefault();
-        this.props.onFooterClick('active');
+        this.props.onFooterClick("active");
     }
 
     handleClickCompleted(e) {
         e.preventDefault();
-        this.props.onFooterClick('completed');
+        this.props.onFooterClick("completed");
     }
 
     pluralize(count, word) {
-        return count === 1 ? word : word + 's';
+        return count === 1 ? word : word + "s";
     }
 
     render() {
-        const activeTodoWord = this.pluralize(this.props.count, 'item');
+        const activeTodoWord = this.pluralize(this.props.count, "item");
         let clearButton = null;
 
         if (this.props.completedCount > 0) {
             clearButton = (
                 <button
-                  className="clear-completed"
-                  onClick={this.props.onClearCompleted}>
-                Clear completed
+                    className="clear-completed"
+                    onClick={this.props.onClearCompleted}
+                >
+                    Clear completed
                 </button>
             );
         }
@@ -45,28 +46,35 @@ class TodoFooter extends React.Component {
                 <ul id="filters">
                     <li>
                         <a
-                          href="#/"
-                          onClick={this.handleClickAll.bind(this)}
-                          className={classNames({selected: nowShowing === 'all'})}>
-                        All
+                            href="#/"
+                            onClick={this.handleClickAll.bind(this)}
+                            className={classNames({
+                                selected: nowShowing === "all"
+                            })}
+                        >
+                            All
                         </a>
-                    </li>
-                    {' '}
+                    </li>{" "}
                     <li>
                         <a
-                          href="#/active"
-                          onClick={this.handleClickActive.bind(this)}
-                          className={classNames({selected: nowShowing === 'active'})}>
-                        Active
+                            href="#/active"
+                            onClick={this.handleClickActive.bind(this)}
+                            className={classNames({
+                                selected: nowShowing === "active"
+                            })}
+                        >
+                            Active
                         </a>
-                    </li>
-                    {' '}
+                    </li>{" "}
                     <li>
                         <a
-                          href="#/completed"
-                          onClick={this.handleClickCompleted.bind(this)}
-                          className={classNames({selected: nowShowing === 'completed'})}>
-                        Completed
+                            href="#/completed"
+                            onClick={this.handleClickCompleted.bind(this)}
+                            className={classNames({
+                                selected: nowShowing === "completed"
+                            })}
+                        >
+                            Completed
                         </a>
                     </li>
                 </ul>
@@ -82,6 +90,6 @@ TodoFooter.propTypes = {
     nowShowing: PropTypes.string,
     onClearCompleted: PropTypes.func,
     onFooterClick: PropTypes.func
-}
+};
 
 export default TodoFooter;

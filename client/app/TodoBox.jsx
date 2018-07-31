@@ -1,21 +1,22 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Todo from './Todo';
-import TodoModel from './TodoModel';
-import TodoFooter from './TodoFooter';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Todo from "./Todo";
+import TodoModel from "./TodoModel";
+import TodoFooter from "./TodoFooter";
 
-class TodoBox extends React.Component {
+export default class TodoBox extends React.Component {
     constructor(props) {
         super(props);
 
-        this.ACTIVE_TODOS = 'active';
-        this.COMPLETED_TODOS = 'completed';
+        this.ALL_TODOS = "all";
+        this.ACTIVE_TODOS = "active";
+        this.COMPLETED_TODOS = "completed";
         this.ENTER_KEY = 13;
 
         this.state = {
             nowShowing: props.nowShowing,
             editing: null,
-            newTodo: ''
+            newTodo: ""
         };
     }
 
@@ -25,7 +26,7 @@ class TodoBox extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({newTodo: event.target.value});
+        this.setState({ newTodo: event.target.value });
     }
 
     handleNewTodoKeyDown(event) {
@@ -36,7 +37,7 @@ class TodoBox extends React.Component {
         const val = this.state.newTodo.trim();
         if (val) {
             this.props.model.addTodo(val);
-            this.setState({newTodo: ''});
+            this.setState({ newTodo: "" });
         }
     }
 
@@ -54,16 +55,16 @@ class TodoBox extends React.Component {
     }
 
     edit(todo) {
-        this.setState({editing: todo.id});
+        this.setState({ editing: todo.id });
     }
 
     save(todoToSave, text) {
         this.props.model.save(todoToSave, text);
-        this.setState({editing: null});
+        this.setState({ editing: null });
     }
 
     cancel() {
-        this.setState({editing: null});
+        this.setState({ editing: null });
     }
 
     clearCompleted() {
@@ -71,7 +72,7 @@ class TodoBox extends React.Component {
     }
 
     footerClick(mode) {
-        this.setState({nowShowing: mode});
+        this.setState({ nowShowing: mode });
         this.props.model.inform();
     }
 
@@ -92,14 +93,14 @@ class TodoBox extends React.Component {
         const todoItems = shownTodos.map(todo => {
             return (
                 <Todo
-                  key={todo.id}
-                  todo={todo}
-                  onToggle={this.toggle.bind(this, todo)}
-                  onDestroy={this.destroy.bind(this, todo)}
-                  onEdit={this.edit.bind(this, todo)}
-                  editing={this.state.editing === todo.id}
-                  onSave={this.save.bind(this, todo)}
-                  onCancel={this.cancel}
+                    key={todo.id}
+                    todo={todo}
+                    onToggle={this.toggle.bind(this, todo)}
+                    onDestroy={this.destroy.bind(this, todo)}
+                    onEdit={this.edit.bind(this, todo)}
+                    editing={this.state.editing === todo.id}
+                    onSave={this.save.bind(this, todo)}
+                    onCancel={this.cancel}
                 />
             );
         }, this);
@@ -112,14 +113,15 @@ class TodoBox extends React.Component {
 
         let footer = null;
         if (activeTodoCount || completedCount) {
-            footer =
+            footer = (
                 <TodoFooter
-                  count={activeTodoCount}
-                  completedCount={completedCount}
-                  nowShowing={this.state.nowShowing}
-                  onClearCompleted={this.clearCompleted.bind(this)}
-                  onFooterClick={this.footerClick.bind(this)}
-                />;
+                    count={activeTodoCount}
+                    completedCount={completedCount}
+                    nowShowing={this.state.nowShowing}
+                    onClearCompleted={this.clearCompleted.bind(this)}
+                    onFooterClick={this.footerClick.bind(this)}
+                />
+            );
         }
 
         let main = null;
@@ -127,14 +129,12 @@ class TodoBox extends React.Component {
             main = (
                 <section id="main">
                     <input
-                      id="toggle-all"
-                      type="checkbox"
-                      onChange={this.toggleAll.bind(this)}
-                      checked={activeTodoCount === 0}
+                        id="toggle-all"
+                        type="checkbox"
+                        onChange={this.toggleAll.bind(this)}
+                        checked={activeTodoCount === 0}
                     />
-                    <ul id="todo-list">
-                        {todoItems}
-                    </ul>
+                    <ul id="todo-list">{todoItems}</ul>
                 </section>
             );
         }
@@ -143,12 +143,12 @@ class TodoBox extends React.Component {
                 <header id="header">
                     <h1>todos</h1>
                     <input
-                      id="new-todo"
-                      placeholder="What needs to be done?"
-                      value={this.state.newTodo}
-                      onChange={this.handleChange.bind(this)}
-                      onKeyDown={this.handleNewTodoKeyDown.bind(this)}
-                      autoFocus={true}
+                        id="new-todo"
+                        placeholder="What needs to be done?"
+                        value={this.state.newTodo}
+                        onChange={this.handleChange.bind(this)}
+                        onKeyDown={this.handleNewTodoKeyDown.bind(this)}
+                        autoFocus={true}
                     />
                 </header>
                 {main}
@@ -162,10 +162,8 @@ TodoBox.propTypes = {
     pollInterval: PropTypes.number,
     nowShowing: PropTypes.string,
     model: PropTypes.instanceOf(TodoModel)
-}
+};
 
 TodoBox.defaultProps = {
-    nowShowing: 'all'
-}
-
-export default TodoBox;
+    nowShowing: "all"
+};
