@@ -1,7 +1,7 @@
 NPM:=$(shell which npm)
 NODE_MODULES := node_modules/.bin
 WEBPACK:=$(NODE_MODULES)/webpack
-ESLINT:=$(NODE_MODULES)/eslint
+PRETTIER:=$(NODE_MODULES)/prettier
 WEBPACK_JS:=client/webpack/webpack.config.js
 DB_CONTAINER_NAME:=treasure-mysql
 DBNAME:=treasure
@@ -22,20 +22,14 @@ integration-test:
 run:
 	go run cmd/base.go
 
-prettier:
-  prettier ./client/**/** --write
-
 build:
 	$(WEBPACK) -p --config $(WEBPACK_JS)
 
 watch:
 	$(WEBPACK) -w --config $(WEBPACK_JS) --mode=development
 
-lint:
-	$(ESLINT) client/**/*.jsx
-
 fix:
-	$(ESLINT) --fix client/**/*.jsx
+	$(PRETTIER) ./client/**/** --write
 
 migrate/init:
 	mysql -u root -h localhost --protocol tcp -e "create database \`$(DBNAME)\`" -p
