@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-export default class TodoFooter extends React.Component {
+class TodoFooter extends React.Component {
     handleClickAll(e) {
         e.preventDefault();
         this.props.onFooterClick('all');
@@ -84,3 +84,4 @@ TodoFooter.propTypes = {
     onFooterClick: PropTypes.func
 }
 
+export default TodoFooter;

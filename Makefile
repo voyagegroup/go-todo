@@ -26,7 +26,7 @@ build:
 	$(WEBPACK) -p --config $(WEBPACK_JS)
 
 watch:
-	$(WEBPACK) -w --config $(WEBPACK_JS)
+	$(WEBPACK) -w --config $(WEBPACK_JS) --mode=development
 
 lint:
 	$(ESLINT) client/**/*.jsx

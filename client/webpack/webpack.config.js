@@ -1,5 +1,4 @@
-var webpack = require('webpack')
-var path = require('path')
+const path = require('path')
 
 module.exports = {
   target: 'web',

@@ -4,11 +4,10 @@ import Todo from './Todo';
 import TodoModel from './TodoModel';
 import TodoFooter from './TodoFooter';
 
-export default class TodoBox extends React.Component {
+class TodoBox extends React.Component {
     constructor(props) {
         super(props);
 
-        this.ALL_TODOS = 'all';
         this.ACTIVE_TODOS = 'active';
         this.COMPLETED_TODOS = 'completed';
         this.ENTER_KEY = 13;
@@ -168,3 +167,5 @@ TodoBox.propTypes = {
 TodoBox.defaultProps = {
     nowShowing: 'all'
 }
+
+export default TodoBox;

@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-export default class Todo extends React.Component {
+class Todo extends React.Component {
     constructor(props) {
         super(props);
 
@@ -12,6 +12,11 @@ export default class Todo extends React.Component {
         this.state = {
             editText: this.props.todo.title
         };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     handleSubmit() {
@@ -73,7 +78,7 @@ export default class Todo extends React.Component {
                     checked={this.props.todo.completed}
                     onChange={this.props.onToggle}
                 />
-                <label onDoubleClick={this.handleEdit.bind(this)}>
+                <label onDoubleClick={this.handleEdit}>
                     {this.props.todo.title}
                 </label>
                 <button className="destroy" onClick={this.props.onDestroy} />
@@ -82,9 +87,9 @@ export default class Todo extends React.Component {
                 ref="editField"
                 className="edit"
                 value={this.state.editText}
-                onBlur={this.handleSubmit.bind(this)}
-                onChange={this.handleChange.bind(this)}
-                onKeyDown={this.handleKeyDown.bind(this)}
+                onBlur={this.handleSubmit}
+                onChange={this.handleChange}
+                onKeyDown={this.handleKeyDown}
             />
             </li>
         );
@@ -101,3 +106,5 @@ Todo.propTypes = {
     onCancel: PropTypes.func,
     todo: PropTypes.object
 }
+
+export default Todo;
