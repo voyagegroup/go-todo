@@ -25,8 +25,8 @@ $ make test
 # インテグレーションテストの実行。テスト用のデータベースを利用したテストを実行します。
 $ make integration-test
 
-# eslintによるクライアント側アプリのlintを実行します。
-$ make lint
+# prettierによるクライアント側アプリの整形を実行します。
+$ make fix
 
 # クライアントアプリの手動ビルド。
 $ make build
