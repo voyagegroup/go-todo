@@ -6,7 +6,7 @@ CREATE TABLE `todos` (
   `created` datetime NOT NULL DEFAULT NOW() COMMENT '登録日',
   `updated` datetime DEFAULT NULL COMMENT '更新日',
   PRIMARY KEY (`todo_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='タスクリスト';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='タスクリスト';
 
 -- +migrate Down
 DROP TABLE todos;
