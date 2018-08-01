@@ -4,8 +4,8 @@ class TodoApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newTodo: '',
-      todos: [],
+      newTodo: "",
+      todos: []
     };
     this.token = this.fetchToken();
     this.load();
@@ -26,7 +26,7 @@ class TodoApp extends React.Component {
   }
 
   load() {
-    return fetch('/api/todos', {
+    return fetch("/api/todos", {
       credentials: "same-origin",
       method: "GET",
       headers: {
@@ -45,16 +45,16 @@ class TodoApp extends React.Component {
       })
       .then(x => x.json())
       .then(json => {
-        this.setState({todos: json});
-      })
+        this.setState({ todos: json });
+      });
   }
 
   save(title) {
-    const todo = {title: title, completed: false};
+    const todo = { title: title, completed: false };
 
-    return fetch('/api/todos', {
+    return fetch("/api/todos", {
       credentials: "same-origin",
-      method: 'POST',
+      method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ class TodoApp extends React.Component {
       .then(data => {
         this.setState({
           todos: [...this.state.todos, data],
-          newTodo: '',
+          newTodo: ""
         });
       })
       .catch(err => {
@@ -82,38 +82,42 @@ class TodoApp extends React.Component {
   }
 
   renderTodos() {
-    const {todos} = this.state;
+    const { todos } = this.state;
     return todos.map(t => {
-      return e('li', {key: t.id},
-        e('div', {},
-          e('label', {}, t.title)
-        ),
-      );
+      return e("li", { key: t.id }, e("div", {}, e("label", {}, t.title)));
     });
   }
 
   render() {
-    const {newTodo} = this.state;
-    return e('div', {},
-      e('header', {id: 'header'},
-        e('input', {
+    const { newTodo } = this.state;
+    return e(
+      "div",
+      {},
+      e(
+        "header",
+        { id: "header" },
+        e("input", {
           value: newTodo,
           autoFocus: true,
-          onChange: (event) => {
-            this.setState({newTodo: event.target.value});
-          },
+          onChange: event => {
+            this.setState({ newTodo: event.target.value });
+          }
         }),
         null
       ),
-      e('button', {onClick: () => {
-          this.save(newTodo);
-        }}, '保存する'),
-      e('div', {},
-        e('ul', {}, this.renderTodos())
+      e(
+        "button",
+        {
+          onClick: () => {
+            this.save(newTodo);
+          }
+        },
+        "保存する"
       ),
-      e('div', {}, null),
+      e("div", {}, e("ul", {}, this.renderTodos())),
+      e("div", {}, null)
     );
   }
 }
 
-ReactDOM.render( e(TodoApp), document.getElementById('app') );
+ReactDOM.render(e(TodoApp), document.getElementById("app"));
