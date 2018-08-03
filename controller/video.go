@@ -16,9 +16,7 @@ const maxUploadSize = 2 * 1024 * 1024 * 1000000000000
 
 func (t *Video) Upload(w http.ResponseWriter, r *http.Request) error {
 
-	fmt.Print(r.Header.Get("Content-Length"))
-	fmt.Print("¥n")
-	fmt.Print(maxUploadSize)
+	fmt.Printf("maxUploadSize: %v, headerContentLength: %v", maxUploadSize, r.Header.Get("Content-Length"))
 
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
