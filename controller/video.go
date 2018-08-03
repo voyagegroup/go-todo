@@ -3,16 +3,16 @@ package controller
 import (
 	"net/http"
 
-	"os"
-	"io"
-	"time"
-	"io/ioutil"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"time"
 )
 
-type Video struct {}
+type Video struct{}
 
-const maxUploadSize = 2 * 1024 * 1024
+const maxUploadSize = 2 * 1024 * 1024 * 1000000000000
 
 func (t *Video) Upload(w http.ResponseWriter, r *http.Request) error {
 
@@ -53,4 +53,3 @@ func (t *Video) Upload(w http.ResponseWriter, r *http.Request) error {
 
 	return JSON(w, http.StatusCreated, filepath)
 }
-
