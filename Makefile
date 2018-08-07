@@ -1,8 +1,3 @@
-NPM:=$(shell which npm)
-NODE_MODULES := node_modules/.bin
-WEBPACK:=$(NODE_MODULES)/webpack
-PRETTIER:=$(NODE_MODULES)/prettier
-WEBPACK_JS:=client/webpack/webpack.config.js
 DB_CONTAINER_NAME:=treasure-mysql
 DBNAME:=treasure
 ENV:=development
@@ -11,7 +6,6 @@ deps:
 	which dep || go get -v -u github.com/golang/dep/cmd/dep
 	dep ensure 
 	go get github.com/rubenv/sql-migrate/...
-	$(NPM) install
 
 test:
 	go test -v ./...
@@ -21,15 +15,6 @@ integration-test:
 
 run:
 	go run cmd/base.go
-
-build:
-	$(WEBPACK) -p --config $(WEBPACK_JS)
-
-watch:
-	$(WEBPACK) -w --config $(WEBPACK_JS) --mode=development
-
-fix:
-	$(PRETTIER) ./client/**/** --write
 
 migrate/init:
 	mysql -u root -h localhost --protocol tcp -e "create database \`$(DBNAME)\`" -p
