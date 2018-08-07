@@ -1,13 +1,13 @@
 # go-todo
 
-Goの `net/http` とReact(ES2015) を利用したTODOアプリです。TODOアプリのフロント実装は [tastejs/todomvc](https://github.com/tastejs/todomvc) を利用しています。
+Goの `net/http` とReact(ES2015) を利用したTODOアプリです。
+TODOアプリのフロント実装は [tastejs/todomvc](https://github.com/tastejs/todomvc) を利用しています。
 
 ## 必要なもの
 
 * Go 1.9以上
 * MySQLクライアント
     * https://github.com/go-sql-driver/mysql のインストールに必要です。
-* Node 6.x以上, npm 3.x以上
 * (optional) Docker
     * MySQLをDockerコンテナで動かせるようにもしています。
 
@@ -24,15 +24,6 @@ $ make test
 
 # インテグレーションテストの実行。テスト用のデータベースを利用したテストを実行します。
 $ make integration-test
-
-# prettierによるクライアント側アプリの整形を実行します。
-$ make fix
-
-# クライアントアプリの手動ビルド。
-$ make build
-
-# クライアント側コードを変更した場合に自動的にビルドします。`client` 以下のコードを保存すると自動的にコンパイルが走ります。
-$ make watch
 ```
 
 ## データベースマイグレーション
