@@ -1,7 +1,3 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-
 class TodoFooter extends React.Component {
     handleClickAll(e) {
         e.preventDefault();
@@ -91,5 +87,3 @@ TodoFooter.propTypes = {
     onClearCompleted: PropTypes.func,
     onFooterClick: PropTypes.func
 };
-
-export default TodoFooter;

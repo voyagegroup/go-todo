@@ -1,10 +1,4 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import Todo from "./Todo";
-import TodoModel from "./TodoModel";
-import TodoFooter from "./TodoFooter";
-
-export default class TodoBox extends React.Component {
+class TodoBox extends React.Component {
     constructor(props) {
         super(props);
 

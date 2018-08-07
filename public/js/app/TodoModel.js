@@ -3,7 +3,7 @@ const get = path => {
         credentials: "same-origin",
         method: "GET",
         headers: {
-            Accept: "application/json",
+            "Accept": "application/json",
             "Content-Type": "application/json"
         }
     })
@@ -161,5 +161,3 @@ class TodoModel {
         );
     }
 }
-
-export default TodoModel;
