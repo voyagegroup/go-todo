@@ -31,7 +31,7 @@ migrate/status:
 migrate/dry:
 	sql-migrate up -dryrun -env=$(ENV)
 
-docker/build: Dockerfile docker-compose.yml
+docker/build: docker-compose.yml
 	docker-compose build
 
 docker/start:
