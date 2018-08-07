@@ -88,8 +88,7 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	return nil
+	return JSON(w, http.StatusOK, todo)
 }
 
 func (t *Todo) DeleteMulti(w http.ResponseWriter, r *http.Request) error {
@@ -109,8 +108,7 @@ func (t *Todo) DeleteMulti(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	return nil
+	return JSON(w, http.StatusOK, todos)
 }
 
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
@@ -137,8 +135,7 @@ func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	return nil
+	return JSON(w, http.StatusOK, todo)
 }
 
 func (t *Todo) ToggleAll(w http.ResponseWriter, r *http.Request) error {
@@ -158,6 +155,5 @@ func (t *Todo) ToggleAll(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	return nil
+	return JSON(w, http.StatusOK, t)
 }

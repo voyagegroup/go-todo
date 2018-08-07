@@ -5,6 +5,16 @@
   <title>go-todo - Todo App Example</title>
   <link rel="stylesheet" href="./static/css/base.css">
   <link rel="stylesheet" href="./static/css/index.css">
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.6.2/prop-types.js"></script>
+  <script src="https://unpkg.com/classnames@2.2.6/index.js"></script>
+  <script type="text/babel" src="./static/js/app/TodoModel.js"></script>
+  <script type="text/babel" src="./static/js/app/Todo.jsx"></script>
+  <script type="text/babel" src="./static/js/app/TodoBox.jsx"></script>
+  <script type="text/babel" src="./static/js/app/TodoFooter.jsx"></script>
+
 </head>
 <body>
   <section id="app"></section>
@@ -13,6 +23,15 @@
     <p>Created by <a href="http://github.com/petehunt/">petehunt</a></p>
     <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
   </footer>
-  <script src="./static/js/bundle.js"></script>
+  <script type="text/babel">
+    const model = new TodoModel();
+    function r() {
+        ReactDOM.render(
+            <TodoBox model={model} pollInterval={5000} />,
+            document.getElementById("app")
+        );
+    }
+    model.subscribe(r);
+  </script>
 </body>
 </html>

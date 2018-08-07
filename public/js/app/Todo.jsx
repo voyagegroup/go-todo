@@ -1,8 +1,3 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-
 class Todo extends React.Component {
     constructor(props) {
         super(props);
@@ -111,5 +106,3 @@ Todo.propTypes = {
     onCancel: PropTypes.func,
     todo: PropTypes.object
 };
-
-export default Todo;
