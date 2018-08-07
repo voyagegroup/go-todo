@@ -61,7 +61,7 @@ class Todo extends React.Component {
     }
 
     render() {
-      return (
+        return (
             <li
                 className={classNames({
                     completed: this.props.todo.completed,
