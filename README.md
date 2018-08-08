@@ -79,19 +79,22 @@ MySQLをDockerで用意するようにしています。開発用に使う際に
 
 各環境でのDockerのインストールについては https://docs.docker.com/engine/installation/ をみてください。
 
-開発用Docker環境を立ち上げるには以下のようにします。まずイメージをbuildします。
-
-```sh
-$ make docker/build
-```
-
-[Dockerfile]() の内容を変更しないのであればbuildは一度だけしておけばよいでしょう。あとは以下のようにしてcontainerをスタートできます。
+開発用Docker環境を立ち上げるには以下のようにします。
 
 ```sh
 make docker/start
 ```
 
-コンテナに関する設定は [docker-compose.yml]() にまとめています。
+止めるときは
+
+```sh
+make docker/stop
+```
+
+です。詳しくは [Makefile](./Makefile) を見てください。
+
+コンテナに関する設定は [docker-compose.yml](./docker-compose.yml) にまとめています。
+
 
 ## Acknowledgement
 

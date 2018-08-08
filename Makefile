@@ -1,4 +1,3 @@
-DB_CONTAINER_NAME:=treasure-mysql
 DBNAME:=treasure
 ENV:=development
 
@@ -31,11 +30,11 @@ migrate/status:
 migrate/dry:
 	sql-migrate up -dryrun -env=$(ENV)
 
-docker/build: docker-compose.yml
-	docker-compose build
-
-docker/start:
+docker/start: docker-compose.yml
 	docker-compose up -d
+
+docker/stop:
+	docker-compose stop
 
 docker/logs:
 	docker-compose logs
