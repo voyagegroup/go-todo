@@ -12,7 +12,7 @@ Goの `net/http` とReact(ES2015) を利用したTODOアプリです。TODOア�
 
 ## いろいろな操作
 
-[Makefile]() をみてください。
+[Makefile](./Makefile) をみてください。
 
 ```sh
 # 環境設定をするには以下のようにします。
@@ -23,10 +23,6 @@ $ make test
 
 # インテグレーションテストの実行。テスト用のデータベースを利用したテストを実行します。
 $ make integration-test
-
-# prettierによるクライアント側アプリの整形を実行します。
-$ make fix
-
 ```
 
 ## データベースマイグレーション
