@@ -12,7 +12,7 @@ Goの `net/http` とReact(ES2015) を利用したTODOアプリです。TODOア�
 
 ## いろいろな操作
 
-[Makefile]() をみてください。
+[Makefile](./Makefile) をみてください。
 
 ```sh
 # 環境設定をするには以下のようにします。
@@ -23,10 +23,6 @@ $ make test
 
 # インテグレーションテストの実行。テスト用のデータベースを利用したテストを実行します。
 $ make integration-test
-
-# prettierによるクライアント側アプリの整形を実行します。
-$ make fix
-
 ```
 
 ## データベースマイグレーション
@@ -83,19 +79,22 @@ MySQLをDockerで用意するようにしています。開発用に使う際に
 
 各環境でのDockerのインストールについては https://docs.docker.com/engine/installation/ をみてください。
 
-開発用Docker環境を立ち上げるには以下のようにします。まずイメージをbuildします。
-
-```sh
-$ make docker/build
-```
-
-[Dockerfile]() の内容を変更しないのであればbuildは一度だけしておけばよいでしょう。あとは以下のようにしてcontainerをスタートできます。
+開発用Docker環境を立ち上げるには以下のようにします。
 
 ```sh
 make docker/start
 ```
 
-コンテナに関する設定は [docker-compose.yml]() にまとめています。
+止めるときは
+
+```sh
+make docker/stop
+```
+
+です。詳しくは [Makefile](./Makefile) を見てください。
+
+コンテナに関する設定は [docker-compose.yml](./docker-compose.yml) にまとめています。
+
 
 ## Acknowledgement
 

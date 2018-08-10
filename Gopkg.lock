@@ -2,60 +2,87 @@
 
 
 [[projects]]
+  digest = "1:21fed264e3d596b1fcf957f61c415960d2546bd03ecff45cb6381d36721b26b8"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
+  pruneopts = "UT"
   revision = "7ebe0a500653eeb1859664bed5e48dec1e164e73"
 
 [[projects]]
+  digest = "1:95d919a0ead1ee36abd87a69b24e2035c156c340fe1947f96014769fcbcb1a77"
   name = "github.com/gorilla/context"
   packages = ["."]
+  pruneopts = "UT"
   revision = "aed02d124ae4a0e94fea4541c8effd05bf0c8296"
 
 [[projects]]
+  digest = "1:75e22306b50b29e73503049cd4b1c24efa442fa2f67c58fae2ac3e98807356a5"
   name = "github.com/gorilla/csrf"
   packages = ["."]
+  pruneopts = "UT"
   revision = "69581736821c33d85bbf378f42f6ad864dbd85de"
   version = "v1.5"
 
 [[projects]]
+  digest = "1:e73f5b0152105f18bc131fba127d9949305c8693f8a762588a82a48f61756f5f"
   name = "github.com/gorilla/mux"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:50a26db0fdb6f9ab66a89ec890efbf450d392b95cdcf6b9e4b06d2f06c50b387"
   name = "github.com/gorilla/securecookie"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ff356348f74133a59d3e93aa24b5b4551b6fe90d"
 
 [[projects]]
+  digest = "1:7398a05c57f878da97b9d0a3c2d72554eda40a491ab9e5f48f3b975497e109fd"
   name = "github.com/gorilla/sessions"
   packages = ["."]
+  pruneopts = "UT"
   revision = "56ba4b0a11da87516629a57408a5f7e4c8ea7b0b"
 
 [[projects]]
+  digest = "1:d5657c316ae315dc5da591b73706f67034b9f170943a983b362b10ccc4f55bfb"
   name = "github.com/jmoiron/sqlx"
   packages = [
     ".",
-    "reflectx"
+    "reflectx",
   ]
+  pruneopts = "UT"
   revision = "bdae0c3219c3bdb92f3d7c70825018712787c933"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "v1"
+  digest = "1:4384086c0f7f9e662c2ae8e900af35dc75ff262205b362597bb65af2fd8a21c9"
   name = "gopkg.in/yaml.v1"
   packages = ["."]
+  pruneopts = "UT"
   revision = "9f9df34309c04878acc86042b16630b0f696e1de"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b5d7c0071b0c1d48e2b9a4b4190bc0f3bbba10b663a81e0389dd3128012bba08"
+  input-imports = [
+    "github.com/go-sql-driver/mysql",
+    "github.com/gorilla/context",
+    "github.com/gorilla/csrf",
+    "github.com/gorilla/mux",
+    "github.com/gorilla/sessions",
+    "github.com/jmoiron/sqlx",
+    "github.com/pkg/errors",
+    "gopkg.in/yaml.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
