@@ -64,7 +64,7 @@ class TodoApp extends React.Component {
       credentials: "same-origin",
       method: "POST",
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
         "X-CSRF-Token": this.token
       },
@@ -89,6 +89,27 @@ class TodoApp extends React.Component {
       });
   }
 
+  destroy(todo) {
+    const {todos} = this.state;
+
+    return fetch("/api/todos", {
+      credentials: "same-origin",
+      method: "DELETE",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": this.token
+      },
+      body: JSON.stringify(todo),
+    }).then(() => {
+      this.setState({
+        todos: todos.filter(candidate => {
+            return candidate !== todo;
+        })
+      });
+    });
+  }
+
   renderTodos() {
     const {todos, editText} = this.state;
 
@@ -97,7 +118,12 @@ class TodoApp extends React.Component {
         e("div", {className: "view"},
           e("input", {className: "toggle", type: "checkbox"}),
           e("label", {}, t.title),
-          e("button", {className: "destroy"}, "Delete"),
+          e("button", {
+            className: "destroy",
+            onClick: () => {
+              this.destroy(t);
+            }
+          }, "Delete"),
         ),
         e("input", {className: "edit", value: editText}),
       );
