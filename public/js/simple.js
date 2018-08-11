@@ -113,9 +113,9 @@ class TodoApp extends React.Component {
   toggle(todoToToggle) {
     const {todos} = this.state;
 
-    return fetch("/api/todos/toggle", {
+    return fetch("/api/todos/togle", {
       credentials: "same-origin",
-      method: "PUT",
+      method: "POST",
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
