@@ -91,5 +91,5 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
-	return JSON(w, http.StatusNotFound, nil)
+	return JSON(w, http.StatusNotImplemented, nil)
 }
