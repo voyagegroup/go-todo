@@ -110,13 +110,37 @@ class TodoApp extends React.Component {
     });
   }
 
+  toggle(todoToToggle) {
+    const {todos} = this.state;
+
+    return fetch("/api/todos/toggle", {
+      credentials: "same-origin",
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": this.token
+      },
+      body: JSON.stringify(todoToToggle),
+    })
+      .then(() => {
+        this.setState({
+          todos: todos.map(todo => {
+            return todo !== todoToToggle ? todo : Object.assign({}, todo, { completed: !todo.completed });
+          })
+        });
+      });
+  }
+
   renderTodos() {
     const {todos, editText} = this.state;
 
     return todos.map(t => {
       return e("li", {key: t.id},
         e("div", {className: "view"},
-          e("input", {className: "toggle", type: "checkbox"}),
+          e("input", {className: "toggle", type: "checkbox", checked: t.completed, onChange: () => {
+            this.toggle(t);
+          }}),
           e("label", {}, t.title),
           e("button", {
             className: "destroy",
