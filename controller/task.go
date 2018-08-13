@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/voyagegroup/go-todo/model"
@@ -91,69 +90,6 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 	return JSON(w, http.StatusOK, todo)
 }
 
-func (t *Todo) DeleteMulti(w http.ResponseWriter, r *http.Request) error {
-	var todos []model.Todo
-	if err := json.NewDecoder(r.Body).Decode(&todos); err != nil {
-		return err
-	}
-
-	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
-		for _, todo := range todos {
-			if _, err := todo.Delete(tx); err != nil {
-				return err
-			}
-		}
-		return tx.Commit()
-	}); err != nil {
-		return err
-	}
-
-	return JSON(w, http.StatusOK, todos)
-}
-
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
-	var todo model.Todo
-	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
-		return err
-	}
-
-	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
-		result, err := todo.Toggle(tx)
-		if err != nil {
-			return err
-		}
-		if err := tx.Commit(); err != nil {
-			return err
-		}
-		if n, err := result.RowsAffected(); err != nil {
-			return err
-		} else if n != 1 {
-			return errors.New("no rows updated")
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-
-	return JSON(w, http.StatusOK, todo)
-}
-
-func (t *Todo) ToggleAll(w http.ResponseWriter, r *http.Request) error {
-	var req = struct {
-		Checked bool `json:"checked"`
-	}{}
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		return err
-	}
-
-	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
-		if _, err := model.TodosToggleAll(tx, req.Checked); err != nil {
-			return err
-		}
-		return tx.Commit()
-	}); err != nil {
-		return err
-	}
-
-	return JSON(w, http.StatusOK, t)
+	return JSON(w, http.StatusNotImplemented, nil)
 }

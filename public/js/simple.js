@@ -113,7 +113,7 @@ class TodoApp extends React.Component {
   toggle(todoToToggle) {
     const {todos} = this.state;
 
-    return fetch("/api/todos/toggle", {
+    return fetch("/api/todos/togle", {
       credentials: "same-origin",
       method: "POST",
       headers: {
@@ -176,7 +176,8 @@ class TodoApp extends React.Component {
           "Add"
         ),
       ),
-      e("div", {}, e("ul", {id: "todo-list"}, this.renderTodos())),
+      e("div", {}, e("ul", {id: "todo-list"}, this.renderTodos()),
+      ),
     );
   }
 }
