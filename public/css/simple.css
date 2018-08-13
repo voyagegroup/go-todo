@@ -1,0 +1,30 @@
+body {
+	background: #eaeaea url('bg.png');
+	color: #4d4d4d;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+#header input {
+    margin: 16px;
+    padding: 8px;
+    border: none;
+}
+
+#todo-list {
+    list-style: none;
+}
+
+#todo-list li label {
+    white-space: pre;
+    word-break: break-word;
+    padding: 0 16px;
+    line-height: 1.6;
+}
+
+#todo-list li .edit {
+    display: none;
+}

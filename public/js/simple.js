@@ -5,17 +5,19 @@ class TodoApp extends React.Component {
     super(props);
     this.state = {
       newTodo: "",
-      todos: []
+      todos: [],
+      editText: "",
     };
+
     this.token = this.fetchToken();
     this.load();
   }
 
   fetchToken() {
-    fetch("/token", { credentials: "same-origin" })
+    fetch("/token", {credentials: "same-origin"})
       .then(x => x.json())
       .then(json => {
-        if (json == null) {
+        if (json === null) {
           return;
         }
         this.token = json.token;
@@ -45,18 +47,24 @@ class TodoApp extends React.Component {
       })
       .then(x => x.json())
       .then(json => {
-        this.setState({ todos: json });
+        if (json === null) {
+          return;
+        }
+        this.setState({todos: json});
       });
   }
 
-  save(title) {
-    const todo = { title: title, completed: false };
+  addTodo(title) {
+    if (title === "") {
+      return;
+    }
+    const todo = {title: title, completed: false};
 
     return fetch("/api/todos", {
       credentials: "same-origin",
       method: "POST",
       headers: {
-        Accept: "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
         "X-CSRF-Token": this.token
       },
@@ -81,41 +89,94 @@ class TodoApp extends React.Component {
       });
   }
 
+  destroy(todo) {
+    const {todos} = this.state;
+
+    return fetch("/api/todos", {
+      credentials: "same-origin",
+      method: "DELETE",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": this.token
+      },
+      body: JSON.stringify(todo),
+    }).then(() => {
+      this.setState({
+        todos: todos.filter(candidate => {
+            return candidate !== todo;
+        })
+      });
+    });
+  }
+
+  toggle(todoToToggle) {
+    const {todos} = this.state;
+
+    return fetch("/api/todos/toggle", {
+      credentials: "same-origin",
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-Token": this.token
+      },
+      body: JSON.stringify(todoToToggle),
+    })
+      .then(() => {
+        this.setState({
+          todos: todos.map(todo => {
+            return todo !== todoToToggle ? todo : Object.assign({}, todo, { completed: !todo.completed });
+          })
+        });
+      });
+  }
+
   renderTodos() {
-    const { todos } = this.state;
+    const {todos, editText} = this.state;
+
     return todos.map(t => {
-      return e("li", { key: t.id }, e("div", {}, e("label", {}, t.title)));
+      return e("li", {key: t.id},
+        e("div", {className: "view"},
+          e("input", {className: "toggle", type: "checkbox", checked: t.completed, onChange: () => {
+            this.toggle(t);
+          }}),
+          e("label", {}, t.title),
+          e("button", {
+            className: "destroy",
+            onClick: () => {
+              this.destroy(t);
+            }
+          }, "Delete"),
+        ),
+        e("input", {className: "edit", value: editText}),
+      );
     });
   }
 
   render() {
-    const { newTodo } = this.state;
-    return e(
-      "div",
-      {},
-      e(
-        "header",
-        { id: "header" },
+    const {newTodo} = this.state;
+
+    return e("div", {},
+      e("header", {id: "header"},
         e("input", {
+          id: "new-todo",
+          placeholder: "What needs to be done?",
           value: newTodo,
           autoFocus: true,
           onChange: event => {
-            this.setState({ newTodo: event.target.value });
+            this.setState({newTodo: event.target.value});
           }
         }),
-        null
+        e("button", {
+            onClick: () => {
+              this.addTodo(newTodo);
+            }
+          },
+          "Add"
+        ),
       ),
-      e(
-        "button",
-        {
-          onClick: () => {
-            this.save(newTodo);
-          }
-        },
-        "保存する"
-      ),
-      e("div", {}, e("ul", {}, this.renderTodos())),
-      e("div", {}, null)
+      e("div", {}, e("ul", {id: "todo-list"}, this.renderTodos())),
     );
   }
 }
