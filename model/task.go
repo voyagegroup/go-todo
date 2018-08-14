@@ -95,3 +95,12 @@ func (t *Todo) Delete(tx *sqlx.Tx) (sql.Result, error) {
 func TodosDeleteAll(tx *sqlx.Tx) (sql.Result, error) {
 	return tx.Exec(`truncate table todos`)
 }
+
+func Search(dbx *sqlx.DB, q *SearchQuery) (todos []Todo, err error) {
+	if err := dbx.Select(&todos, `
+	select * from todos where title like ? and completed = ?
+	`, "%"+q.Title+"%", q.Completed); err != nil {
+		return nil, err
+	}
+	return todos, nil
+}

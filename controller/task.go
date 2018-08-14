@@ -15,7 +15,7 @@ type Todo struct {
 }
 
 type ErrorMessage struct {
-	m string `json:"m"`
+	M string `json:"message"`
 }
 
 // GetはDBからユーザを取得して結果を返します
@@ -101,7 +101,17 @@ func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
 func (t *Todo) Search(w http.ResponseWriter, r *http.Request) error {
 	q := r.URL.Query().Get("q")
 	if q == "" {
-		return JSON(w, http.StatusBadRequest, ErrorMessage{"Pei"})
+		return JSON(w, http.StatusBadRequest, &ErrorMessage{"Required parameter q is missing."})
 	}
-	return JSON(w, http.StatusNotImplemented, nil)
+
+	qs, e := model.NewSearchQuery(q)
+	if e != nil {
+		return JSON(w, http.StatusBadRequest, &ErrorMessage{e.Error()})
+	}
+
+	todos, err := model.Search(t.DB, qs)
+	if err != nil {
+		return err
+	}
+	return JSON(w, 200, todos)
 }
