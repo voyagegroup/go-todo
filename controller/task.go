@@ -23,6 +23,19 @@ func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
 	return JSON(w, 200, todos)
 }
 
+func (t *Todo) Search(w http.ResponseWriter, r *http.Request) error {
+	title, ok := r.URL.Query()["title"]
+	if !ok {
+		// @TODO 良いエラー処理をする
+	}
+	todos, err := model.TodosSearch(t.DB, title[0])
+	if err != nil {
+		return err
+	}
+
+	return JSON(w, 200, todos)
+}
+
 func (t *Todo) Put(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
@@ -91,5 +104,24 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
-	return JSON(w, http.StatusNotImplemented, nil)
+	var todo model.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
+	}
+
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
+		result, err := todo.Toggle(tx)
+		if err != nil {
+			return err
+		}
+		if err := tx.Commit(); err != nil {
+			return err
+		}
+		todo.ID, err = result.LastInsertId()
+		return err
+	}); err != nil {
+		return err
+	}
+
+	return JSON(w, http.StatusOK, todo)
 }

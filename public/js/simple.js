@@ -4,9 +4,11 @@ class TodoApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newTodo: "",
+      newTodo: '',
+      newTodoComment: '',
+      todoImage: null,
       todos: [],
-      editText: "",
+      editText: ''
     };
 
     this.token = this.fetchToken();
@@ -14,7 +16,7 @@ class TodoApp extends React.Component {
   }
 
   fetchToken() {
-    fetch("/token", {credentials: "same-origin"})
+    fetch('/token', { credentials: 'same-origin' })
       .then(x => x.json())
       .then(json => {
         if (json === null) {
@@ -23,17 +25,17 @@ class TodoApp extends React.Component {
         this.token = json.token;
       })
       .catch(err => {
-        console.error("fetch error", err);
+        console.error('fetch error', err);
       });
   }
 
   load() {
-    return fetch("/api/todos", {
-      credentials: "same-origin",
-      method: "GET",
+    return fetch('/api/todos', {
+      credentials: 'same-origin',
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
     })
       .then(resp => {
@@ -43,30 +45,35 @@ class TodoApp extends React.Component {
         return resp;
       })
       .catch(err => {
-        console.error("get todo error: ", err);
+        console.error('get todo error: ', err);
       })
       .then(x => x.json())
       .then(json => {
         if (json === null) {
           return;
         }
-        this.setState({todos: json});
+        this.setState({ todos: json });
       });
   }
 
-  addTodo(title) {
-    if (title === "") {
+  addTodo(title, comment, image) {
+    if (title === '') {
       return;
     }
-    const todo = {title: title, completed: false};
+    const todo = {
+      title: title,
+      completed: false,
+      comment: comment,
+      image: image
+    };
 
-    return fetch("/api/todos", {
-      credentials: "same-origin",
-      method: "POST",
+    return fetch('/api/todos', {
+      credentials: 'same-origin',
+      method: 'POST',
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": this.token
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.token
       },
       body: JSON.stringify(todo)
     })
@@ -81,105 +88,145 @@ class TodoApp extends React.Component {
       .then(data => {
         this.setState({
           todos: [...this.state.todos, data],
-          newTodo: ""
+          newTodo: '',
+          newTodoComment: ''
         });
       })
       .catch(err => {
-        console.error("post todo error: ", err);
+        console.error('post todo error: ', err);
       });
   }
 
   destroy(todo) {
-    const {todos} = this.state;
+    const { todos } = this.state;
 
-    return fetch("/api/todos", {
-      credentials: "same-origin",
-      method: "DELETE",
+    return fetch('/api/todos', {
+      credentials: 'same-origin',
+      method: 'DELETE',
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": this.token
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.token
       },
-      body: JSON.stringify(todo),
+      body: JSON.stringify(todo)
     }).then(() => {
       this.setState({
         todos: todos.filter(candidate => {
-            return candidate !== todo;
+          return candidate !== todo;
         })
       });
     });
   }
 
   toggle(todoToToggle) {
-    const {todos} = this.state;
+    const { todos } = this.state;
 
-    return fetch("/api/todos/togle", {
-      credentials: "same-origin",
-      method: "POST",
+    return fetch('/api/todos/toggle', {
+      credentials: 'same-origin',
+      method: 'PUT',
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": this.token
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.token
       },
-      body: JSON.stringify(todoToToggle),
-    })
-      .then(() => {
-        this.setState({
-          todos: todos.map(todo => {
-            return todo !== todoToToggle ? todo : Object.assign({}, todo, { completed: !todo.completed });
-          })
-        });
+      body: JSON.stringify(todoToToggle)
+    }).then(() => {
+      this.setState({
+        todos: todos.map(todo => {
+          return todo !== todoToToggle
+            ? todo
+            : Object.assign({}, todo, { completed: !todo.completed });
+        })
       });
+    });
   }
 
   renderTodos() {
-    const {todos, editText} = this.state;
+    const { todos, editText } = this.state;
 
     return todos.map(t => {
-      return e("li", {key: t.id},
-        e("div", {className: "view"},
-          e("input", {className: "toggle", type: "checkbox", checked: t.completed, onChange: () => {
-            this.toggle(t);
-          }}),
-          e("label", {}, t.title),
-          e("button", {
-            className: "destroy",
-            onClick: () => {
-              this.destroy(t);
+      return e(
+        'li',
+        { key: t.id },
+        e(
+          'div',
+          { className: 'view' },
+          e('input', {
+            className: 'toggle',
+            type: 'checkbox',
+            checked: t.completed,
+            onChange: () => {
+              this.toggle(t);
             }
-          }, "Delete"),
+          }),
+          e('label', {}, t.title),
+          e('label', {}, t.comment),
+          e(
+            'button',
+            {
+              className: 'destroy',
+              onClick: () => {
+                this.destroy(t);
+              }
+            },
+            'Delete'
+          )
         ),
-        e("input", {className: "edit", value: editText}),
+        e('input', { className: 'edit', value: editText })
       );
     });
   }
 
   render() {
-    const {newTodo} = this.state;
+    const { newTodo } = this.state;
+    const { newTodoComment } = this.state;
+    const { todoImage } = this.state;
 
-    return e("div", {},
-      e("header", {id: "header"},
-        e("input", {
-          id: "new-todo",
-          placeholder: "What needs to be done?",
+    return e(
+      'div',
+      {},
+      e(
+        'header',
+        { id: 'header' },
+        e('input', {
+          id: 'new-todo',
+          placeholder: 'What needs to be done?',
           value: newTodo,
           autoFocus: true,
           onChange: event => {
-            this.setState({newTodo: event.target.value});
+            this.setState({ newTodo: event.target.value });
           }
         }),
-        e("button", {
+        e('input', {
+          id: 'new-todo-comment',
+          placeholder: 'comment',
+          value: newTodoComment,
+          onChange: event => {
+            this.setState({ newTodoComment: event.target.value });
+          }
+        }),
+        e('input', {
+          type: 'file',
+          id: 'new-todo-image',
+          name: 'todo-image',
+          onChange: event => {
+            debugger;
+            this.setState({ todoImage: event.target.files[0] });
+          }
+        }),
+        e(
+          'button',
+          {
             onClick: () => {
-              this.addTodo(newTodo);
+              this.addTodo(newTodo, newTodoComment, todoImage);
             }
           },
-          "Add"
-        ),
+          'Add'
+        )
       ),
-      e("div", {}, e("ul", {id: "todo-list"}, this.renderTodos()),
-      ),
+      e('div', {}, e('ul', { id: 'todo-list' }, this.renderTodos()))
     );
   }
 }
 
-ReactDOM.render(e(TodoApp), document.getElementById("app"));
+ReactDOM.render(e(TodoApp), document.getElementById('app'));

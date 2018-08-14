@@ -11,6 +11,7 @@ import (
 type Todo struct {
 	ID        int64      `db:"todo_id" json:"id"`
 	Title     string     `json:"title"`
+	Comment   string     `json:"comment"`
 	Completed bool       `json:"completed"`
 	Created   *time.Time `json:"created"`
 	Updated   *time.Time `json:"updated"`
@@ -18,6 +19,13 @@ type Todo struct {
 
 func TodosAll(dbx *sqlx.DB) (todos []Todo, err error) {
 	if err := dbx.Select(&todos, "select * from todos"); err != nil {
+		return nil, err
+	}
+	return todos, nil
+}
+
+func TodosSearch(dbx *sqlx.DB, title string) (todos []Todo, err error) {
+	if err := dbx.Select(&todos, "select * from todos where title=?", title); err != nil {
 		return nil, err
 	}
 	return todos, nil
@@ -58,14 +66,14 @@ func (t *Todo) Update(tx *sqlx.Tx) (sql.Result, error) {
 
 func (t *Todo) Insert(tx *sqlx.Tx) (sql.Result, error) {
 	stmt, err := tx.Prepare(`
-	insert into todos (title, completed)
-	values(?, ?)
+	insert into todos (title, completed, comment)
+	values(?, ?, ?)
 	`)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	return stmt.Exec(t.Title, t.Completed)
+	return stmt.Exec(t.Title, t.Completed, t.Comment)
 }
 
 // Toggle は指定されたタスクについて現在の状態と入れ替えます。
