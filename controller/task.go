@@ -6,6 +6,7 @@ import (
 
 	"github.com/voyagegroup/go-todo/model"
 
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -21,6 +22,15 @@ func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return JSON(w, 200, todos)
+}
+
+func (t *Todo) GetComment(w http.ResponseWriter, r *http.Request) error {
+	vars := mux.Vars(r)
+	comments, err := model.CommentByTodoID(t.DB, vars["todo_id"])
+	if err != nil {
+		return err
+	}
+	return JSON(w, 200, comments)
 }
 
 func (t *Todo) Search(w http.ResponseWriter, r *http.Request) error {

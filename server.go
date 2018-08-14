@@ -76,6 +76,7 @@ func (s *Server) Route() *mux.Router {
 
 	// TODO ng?
 	router.Handle("/api/todos", handler(todo.Get)).Methods("GET")
+	router.Handle("/api/todos/{todo_id}/comments", handler(todo.GetComment)).Methods("GET")
 	router.Handle("/api/todos", handler(todo.Put)).Methods("PUT")
 	router.Handle("/api/todos", handler(todo.Post)).Methods("POST")
 	router.Handle("/api/todos", handler(todo.Delete)).Methods("DELETE")

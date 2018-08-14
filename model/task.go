@@ -17,11 +17,24 @@ type Todo struct {
 	Updated   *time.Time `json:"updated"`
 }
 
+type Comment struct {
+	ID     int64  `db:"comment_id" json:"id"`
+	TodoID int64  `db:"todo_id" json:"todo_id"`
+	Body   string `json:"body"`
+}
+
 func TodosAll(dbx *sqlx.DB) (todos []Todo, err error) {
 	if err := dbx.Select(&todos, "select * from todos"); err != nil {
 		return nil, err
 	}
 	return todos, nil
+}
+
+func CommentByTodoID(dbx *sqlx.DB, todoID string) (comments []Comment, err error) {
+	if err := dbx.Select(&comments, "select * from comments where todo_id=?", todoID); err != nil {
+		return nil, err
+	}
+	return comments, nil
 }
 
 func TodosSearch(dbx *sqlx.DB, title string) (todos []Todo, err error) {
