@@ -14,6 +14,10 @@ type Todo struct {
 	DB *sqlx.DB
 }
 
+type ErrorMessage struct {
+	m string `json:"m"`
+}
+
 // GetはDBからユーザを取得して結果を返します
 func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
 	todos, err := model.TodosAll(t.DB)
@@ -91,5 +95,13 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
+	return JSON(w, http.StatusNotImplemented, nil)
+}
+
+func (t *Todo) Search(w http.ResponseWriter, r *http.Request) error {
+	q := r.URL.Query().Get("q")
+	if q == "" {
+		return JSON(w, http.StatusBadRequest, ErrorMessage{"Pei"})
+	}
 	return JSON(w, http.StatusNotImplemented, nil)
 }
