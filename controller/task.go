@@ -91,5 +91,20 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
+	var todo model.Todo
+	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
+		return err
+	}
+
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
+		_, err := todo.Toggle(tx)
+		if err != nil {
+			return err
+		}
+		return tx.Commit()
+	}); err != nil {
+		return err
+	}
+
 	return JSON(w, http.StatusNotImplemented, nil)
 }
