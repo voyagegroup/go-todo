@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -14,15 +15,68 @@ type Todo struct {
 	DB *sqlx.DB
 }
 
-// GetはDBからユーザを取得して結果を返します
+// ToggleAll はDBの全ての完了状態を変更し結果を返します
+func (t *Todo) ToggleAll(w http.ResponseWriter, r *http.Request) error {
+	c := struct {
+		Completed bool `json:"completed"`
+	}{}
+	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		return err
+	}
+	var result sql.Result
+	var err error
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
+		result, err = model.TodosToggleAll(tx, c.Completed)
+		if err != nil {
+			return err
+		}
+		if err := tx.Commit(); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return JSON(w, 200, result)
+}
+
+// DeleteCompleted はDBから完了状態のタスクを全て削除し結果を返します
+func (t *Todo) DeleteCompleted(w http.ResponseWriter, r *http.Request) error {
+	var result sql.Result
+	var err error
+	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
+		result, err = model.TodosDeleteCompleted(tx)
+		if err != nil {
+			return err
+		}
+		if err := tx.Commit(); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return JSON(w, 200, result)
+}
+
+// Get はDBからTodoを取得して結果を返します
 func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
-	todos, err := model.TodosAll(t.DB)
+	title := r.FormValue("title")
+	if title == "" {
+		todos, err := model.TodosAll(t.DB)
+		if err != nil {
+			return err
+		}
+		return JSON(w, 200, todos)
+	}
+	todos, err := model.TodoByTitle(t.DB, title)
 	if err != nil {
 		return err
 	}
 	return JSON(w, 200, todos)
 }
 
+// Put はDBのTodoを更新し結果を返します
 func (t *Todo) Put(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
@@ -30,15 +84,14 @@ func (t *Todo) Put(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if err := TXHandler(t.DB, func(tx *sqlx.Tx) error {
-		result, err := todo.Update(tx)
+		_, err := todo.Update(tx)
 		if err != nil {
 			return err
 		}
 		if err := tx.Commit(); err != nil {
 			return err
 		}
-		todo.ID, err = result.LastInsertId()
-		return err
+		return nil
 	}); err != nil {
 		return err
 	}
@@ -46,8 +99,7 @@ func (t *Todo) Put(w http.ResponseWriter, r *http.Request) error {
 	return JSON(w, http.StatusOK, todo)
 }
 
-// PostはタスクをDBに追加します
-// todoをJSONとして受け取ることを想定しています。
+// Post はタスクをDBに追加し結果を返します
 func (t *Todo) Post(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
@@ -71,6 +123,7 @@ func (t *Todo) Post(w http.ResponseWriter, r *http.Request) error {
 	return JSON(w, http.StatusCreated, todo)
 }
 
+// Delete はDBのTodoを削除し結果を返します
 func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
@@ -90,6 +143,7 @@ func (t *Todo) Delete(w http.ResponseWriter, r *http.Request) error {
 	return JSON(w, http.StatusOK, todo)
 }
 
+// Toggle はDBのTodoの完了状態を変更します
 func (t *Todo) Toggle(w http.ResponseWriter, r *http.Request) error {
 	var todo model.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
