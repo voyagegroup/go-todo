@@ -3,6 +3,7 @@
 package model
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -82,6 +83,7 @@ func TestTodoCRUD(t *testing.T) {
 	} else if len(afterTodos) != 0 {
 		t.Fatalf("len(todos) want 0 got %d", len(afterTodos))
 	}
+	fmt.Printf("%#v", afterTodos)
 }
 
 func TestTodoToggle(t *testing.T) {
@@ -122,4 +124,10 @@ func TestTodoToggle(t *testing.T) {
 	if afterTodo.Completed {
 		t.Fatalf("todo should be toggled, but not.: %v", afterTodo)
 	}
+
+	tx3 := dbx.MustBegin()
+	if _, err := afterTodo.Delete(tx3); err != nil {
+		t.Fatalf("delete todo failed: %s", err)
+	}
+	tx3.Commit()
 }

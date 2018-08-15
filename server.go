@@ -9,26 +9,25 @@ import (
 	"github.com/voyagegroup/go-todo/controller"
 	"github.com/voyagegroup/go-todo/db"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/context"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
 
-// Serverはベースアプリケーションのserverを示します
-//
-// TODO: dbxをstructから分離したほうが複数人数開発だと見通しがよいかもしれない
+// Server はベースアプリケーションのserverを示します
 type Server struct {
 	dbx    *sqlx.DB
 	router *mux.Router
 }
 
+// TODO: dbxをstructから分離したほうが複数人数開発だと見通しがよいかもしれない
+
 func (s *Server) Close() error {
 	return s.dbx.Close()
 }
 
-// InitはServerを初期化する
+// Init はServerを初期化する
 func (s *Server) Init(dbconf, env string) {
 	cs, err := db.NewConfigsFromFile(dbconf)
 	if err != nil {
@@ -42,7 +41,7 @@ func (s *Server) Init(dbconf, env string) {
 	s.router = s.Route()
 }
 
-// Newはベースアプリケーションを初期化します
+// New はベースアプリケーションを初期化します
 func New() *Server {
 	return &Server{}
 }
@@ -58,7 +57,7 @@ func (s *Server) Run(addr string) {
 	http.ListenAndServe(addr, context.ClearHandler(CSRF(s.router)))
 }
 
-// Routeはベースアプリケーションのroutingを設定します
+// Route はベースアプリケーションのroutingを設定します
 func (s *Server) Route() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
@@ -73,11 +72,18 @@ func (s *Server) Route() *mux.Router {
 	}).Methods("GET")
 
 	todo := &controller.Todo{DB: s.dbx}
+	todoComment := &controller.TodoComment{DB: s.dbx}
+	user := &controller.User{DB: s.dbx}
 
 	// TODO ng?
+	router.Handle("/api/users", handler(user.Get)).Methods("GET")
+	router.Handle("/api/todos/completed", handler(todo.DeleteCompleted)).Methods("DELETE")
+	router.Handle("/api/todos/toggle_all", handler(todo.ToggleAll)).Methods("POST")
 	router.Handle("/api/todos", handler(todo.Get)).Methods("GET")
-	router.Handle("/api/todos", handler(todo.Put)).Methods("PUT")
-	router.Handle("/api/todos", handler(todo.Post)).Methods("POST")
+	router.Handle("/api/todos", handler(todo.Put)).Methods("PUT")                             //更新
+	router.Handle("/api/todos", handler(todo.Post)).Methods("POST")                           //挿入
+	router.Handle("/api/todos/{todo_id}/comments", handler(todoComment.Get)).Methods("GET")   //取得
+	router.Handle("/api/todos/{todo_id}/comments", handler(todoComment.Post)).Methods("POST") //挿入
 	router.Handle("/api/todos", handler(todo.Delete)).Methods("DELETE")
 	router.Handle("/api/todos/toggle", handler(todo.Toggle)).Methods("PUT")
 
