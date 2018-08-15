@@ -18,6 +18,10 @@ type ErrorMessage struct {
 	M string `json:"message"`
 }
 
+type OkMessage struct {
+	Data interface{} `json:"data"`
+}
+
 // GetはDBからユーザを取得して結果を返します
 func (t *Todo) Get(w http.ResponseWriter, r *http.Request) error {
 	todos, err := model.TodosAll(t.DB)
@@ -113,5 +117,5 @@ func (t *Todo) Search(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return JSON(w, 200, todos)
+	return JSON(w, 200, &OkMessage{todos})
 }

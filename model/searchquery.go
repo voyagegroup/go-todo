@@ -4,25 +4,22 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type SearchQuery struct {
 	Title     string
-	Created   *time.Time
 	Completed bool
 }
 
 func NewSearchQuery(q string) (*SearchQuery, error) {
 	var searchQuery SearchQuery
-	s := strings.Split(q, "+")
+	s := strings.Fields(q)
 	if len(s) == 0 {
 		return nil, fmt.Errorf("%v", "Failed to parse query.")
 	}
 
 	for _, kv := range s {
-		ss := strings.Split(kv, ":")
-
+		ss := strings.SplitN(kv, ":", 2)
 		if len(ss) != 2 {
 			continue
 		}

@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:3ca2109e48660e527509b433c4efb5b910e5b9010d5149a6f44137d47b7970ca"
+  name = "github.com/Masterminds/squirrel"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a6b93000bd219143c56c16e6cb1c4b91da3f224b"
+  version = "v1.0"
+
+[[projects]]
   digest = "1:21fed264e3d596b1fcf957f61c415960d2546bd03ecff45cb6381d36721b26b8"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
@@ -56,6 +64,22 @@
   revision = "bdae0c3219c3bdb92f3d7c70825018712787c933"
 
 [[projects]]
+  branch = "master"
+  digest = "1:a7fc52742a5d011497b6a24024c857d260f809083424cd84110c9e40c34f64fc"
+  name = "github.com/lann/builder"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "47ae307949d02aa1f1069fdafc00ca08e1dbabac"
+
+[[projects]]
+  branch = "master"
+  digest = "1:225499d25a9f1486f3b77cdc4f7d6590c506c3839bb9d8497113f6d19676d54a"
+  name = "github.com/lann/ps"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "62de8c46ede02a7675c4c79c84883eb164cb71e3"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -75,6 +99,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/Masterminds/squirrel",
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/context",
     "github.com/gorilla/csrf",

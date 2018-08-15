@@ -2,7 +2,10 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
+
+	sq "github.com/Masterminds/squirrel"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -96,10 +99,20 @@ func TodosDeleteAll(tx *sqlx.Tx) (sql.Result, error) {
 	return tx.Exec(`truncate table todos`)
 }
 
-func Search(dbx *sqlx.DB, q *SearchQuery) (todos []Todo, err error) {
-	if err := dbx.Select(&todos, `
-	select * from todos where title like ? and completed = ?
-	`, "%"+q.Title+"%", q.Completed); err != nil {
+func Search(dbx *sqlx.DB, q *SearchQuery) ([]Todo, error) {
+	todos := make([]Todo, 0)
+	query := sq.Select("*").From("todos")
+
+	if q.Title != "" {
+		query = query.Where("title LIKE ?", fmt.Sprint("%", q.Title, "%"))
+	}
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := dbx.Select(&todos, sql, args...); err != nil {
 		return nil, err
 	}
 	return todos, nil
